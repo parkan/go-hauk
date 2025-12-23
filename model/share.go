@@ -2,7 +2,8 @@ package model
 
 import (
 	"context"
-	"math/rand"
+	"crypto/rand"
+	"encoding/binary"
 	"strconv"
 	"time"
 
@@ -97,7 +98,7 @@ func NewGroupShare(s store.Store, publicURL string, linkGen func() (string, erro
 	if err != nil {
 		return nil, err
 	}
-	pin := GroupPinMin + rand.Intn(GroupPinMax-GroupPinMin+1)
+	pin := GroupPinMin + cryptoRandInt(GroupPinMax-GroupPinMin+1)
 	return &GroupShare{
 		store:     s,
 		id:        id,
@@ -200,4 +201,10 @@ func LoadShareType(ctx context.Context, s store.Store, id string) (int, error) {
 		return -1, err
 	}
 	return st.Type, nil
+}
+
+func cryptoRandInt(max int) int {
+	var b [8]byte
+	rand.Read(b[:])
+	return int(binary.LittleEndian.Uint64(b[:]) % uint64(max))
 }

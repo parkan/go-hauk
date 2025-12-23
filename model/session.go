@@ -95,14 +95,14 @@ func (s *Session) GetPoints(since float64) [][]any {
 	if since <= 0 {
 		return s.data.Points
 	}
-	timeIdx := 2
+	// encrypted sessions have opaque timestamps - can't filter server-side
 	if s.data.Encrypted {
-		timeIdx = 3
+		return s.data.Points
 	}
 	var pts [][]any
 	for _, p := range s.data.Points {
-		if len(p) > timeIdx {
-			if t, ok := p[timeIdx].(float64); ok && t > since {
+		if len(p) > 2 {
+			if t, ok := p[2].(float64); ok && t > since {
 				pts = append(pts, p)
 			}
 		}

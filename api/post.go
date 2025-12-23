@@ -36,11 +36,12 @@ func (s *Server) handlePost(w http.ResponseWriter, r *http.Request) {
 	var point []any
 
 	if !session.Encrypted() {
-		latF, _ := strconv.ParseFloat(lat, 64)
-		lonF, _ := strconv.ParseFloat(lon, 64)
-		timeF, _ := strconv.ParseFloat(ts, 64)
+		latF, err1 := strconv.ParseFloat(lat, 64)
+		lonF, err2 := strconv.ParseFloat(lon, 64)
+		timeF, err3 := strconv.ParseFloat(ts, 64)
 
-		if latF < -90 || latF > 90 || lonF < -180 || lonF > 180 {
+		if err1 != nil || err2 != nil || err3 != nil ||
+			latF < -90 || latF > 90 || lonF < -180 || lonF > 180 {
 			fmt.Fprintln(w, "Invalid location!")
 			return
 		}

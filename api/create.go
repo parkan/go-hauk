@@ -41,8 +41,16 @@ func (s *Server) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	d, _ := strconv.Atoi(dur)
-	i, _ := strconv.ParseFloat(interval, 64)
+	d, err := strconv.Atoi(dur)
+	if err != nil || d <= 0 {
+		fmt.Fprintln(w, "Invalid duration!")
+		return
+	}
+	i, err := strconv.ParseFloat(interval, 64)
+	if err != nil || i <= 0 {
+		fmt.Fprintln(w, "Invalid interval!")
+		return
+	}
 	mod, _ := strconv.Atoi(r.FormValue("mod"))
 	adoptable := r.FormValue("ado") == "1"
 	encrypted := r.FormValue("e2e") == "1"
@@ -110,7 +118,7 @@ func (s *Server) handleCreate(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if customLink != "" && linkIDRe.MatchString(customLink) {
-			if err := s.tryCustomLink(ctx, share, customLink); err == nil {
+			if err := s.tryCustomLink(ctx, customLink, user); err == nil {
 				share.SetID(customLink)
 			}
 		}
@@ -142,7 +150,7 @@ func (s *Server) handleCreate(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if customLink != "" && linkIDRe.MatchString(customLink) {
-			if err := s.tryCustomLink(ctx, share, customLink); err == nil {
+			if err := s.tryCustomLink(ctx, customLink, user); err == nil {
 				share.SetID(customLink)
 			}
 		}
@@ -195,11 +203,32 @@ func (s *Server) handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type customLinkSetter interface {
-	SetID(string)
-}
+func (s *Server) tryCustomLink(ctx context.Context, link, user string) error {
+	if !s.cfg.AllowLinkReq {
+		return fmt.Errorf("custom links disabled")
+	}
 
-func (s *Server) tryCustomLink(ctx context.Context, _ customLinkSetter, link string) error {
+	// check reserved links
+	if allowedUsers, reserved := s.cfg.ReservedLinks[link]; reserved {
+		allowed := false
+		for _, u := range allowedUsers {
+			if u == user {
+				allowed = true
+				break
+			}
+		}
+		if !allowed {
+			return fmt.Errorf("link reserved")
+		}
+	}
+
+	// whitelist mode: only reserved links allowed
+	if s.cfg.ReserveWL {
+		if _, reserved := s.cfg.ReservedLinks[link]; !reserved {
+			return fmt.Errorf("link not in whitelist")
+		}
+	}
+
 	exists, err := s.store.Exists(ctx, "locdata-"+link)
 	if err != nil {
 		return err
