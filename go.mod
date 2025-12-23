@@ -1,6 +1,6 @@
 module github.com/parkan/go-hauk
 
-go 1.22
+go 1.25
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.6
