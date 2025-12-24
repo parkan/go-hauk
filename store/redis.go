@@ -24,15 +24,23 @@ type Redis struct {
 
 func NewRedis(addr, password, prefix string) (*Redis, error) {
 	var opts *redis.Options
+	var err error
 
-	// unix socket detection
-	if strings.HasPrefix(addr, "/") {
+	// redis:// URL detection
+	if strings.HasPrefix(addr, "redis://") || strings.HasPrefix(addr, "rediss://") {
+		opts, err = redis.ParseURL(addr)
+		if err != nil {
+			return nil, err
+		}
+	} else if strings.HasPrefix(addr, "/") {
+		// unix socket
 		opts = &redis.Options{
 			Network:  "unix",
 			Addr:     addr,
 			Password: password,
 		}
 	} else {
+		// host:port
 		opts = &redis.Options{
 			Addr:     addr,
 			Password: password,
