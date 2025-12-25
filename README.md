@@ -35,8 +35,16 @@ all config via environment variables:
 | HAUK_REDIS_ADDR | localhost:6379 | redis address (host:port or redis:// url) |
 | HAUK_AUTH_METHOD | password | auth method (password, htpasswd, ldap) |
 | HAUK_PASSWORD_HASH | | bcrypt hash for password auth |
+| HAUK_RATE_LIMIT_AUTH | 10 | max auth requests per minute per ip |
+| HAUK_RATE_LIMIT_ADOPT | 10 | max adopt requests per minute per ip |
+| HAUK_TRUST_PROXY | true | trust X-Forwarded-For (set false if not behind proxy) |
 
 see `config/config.go` for full list.
+
+## security improvements over upstream
+
+- adopt authorization: only share owner can adopt into groups (fixes CVE-like auth bypass in upstream)
+- built-in rate limiting on auth and adopt endpoints (configurable, default 10 req/min/ip)
 
 ## compatibility
 

@@ -84,6 +84,11 @@ type Config struct {
 	TrailColor        string
 	OfflineTimeout    int
 	RequestTimeout    int
+
+	// rate limiting
+	RateLimitAuth   int  // requests per minute for auth endpoints
+	RateLimitAdopt  int  // requests per minute for adopt/join endpoints
+	TrustProxy      bool // trust X-Forwarded-For headers
 }
 
 func envStr(key, def string) string {
@@ -165,7 +170,10 @@ func Load() *Config {
 		VelocityUnit:   velUnit,
 		VelocityDataPts: envInt("HAUK_VELOCITY_DATA_PTS", 2),
 		TrailColor:     envStr("HAUK_TRAIL_COLOR", "#d80037"),
-		OfflineTimeout: envInt("HAUK_OFFLINE_TIMEOUT", 30),
-		RequestTimeout: envInt("HAUK_REQUEST_TIMEOUT", 10),
+		OfflineTimeout:  envInt("HAUK_OFFLINE_TIMEOUT", 30),
+		RequestTimeout:  envInt("HAUK_REQUEST_TIMEOUT", 10),
+		RateLimitAuth:   envInt("HAUK_RATE_LIMIT_AUTH", 10),
+		RateLimitAdopt:  envInt("HAUK_RATE_LIMIT_ADOPT", 10),
+		TrustProxy:      envBool("HAUK_TRUST_PROXY", true),
 	}
 }

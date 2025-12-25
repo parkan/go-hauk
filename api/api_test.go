@@ -15,15 +15,18 @@ import (
 func testServer() (*Server, *store.Memory) {
 	mem := store.NewMemory()
 	cfg := &config.Config{
-		PublicURL:    "https://example.com/",
-		MaxDuration:  86400,
-		MinInterval:  1,
-		MaxCachedPts: 3,
-		MaxShownPts:  100,
-		LinkStyle:    0,
-		AllowLinkReq: true,
-		PasswordHash: "$2a$10$LerNFYkUU3ZZrNHhamISZeDK8afdExOwDKbyTaUECDOLa1rV4iN.O", // "test"
-		AuthMethod:   config.AuthPassword,
+		PublicURL:      "https://example.com/",
+		MaxDuration:    86400,
+		MinInterval:    1,
+		MaxCachedPts:   3,
+		MaxShownPts:    100,
+		LinkStyle:      0,
+		AllowLinkReq:   true,
+		PasswordHash:   "$2a$10$LerNFYkUU3ZZrNHhamISZeDK8afdExOwDKbyTaUECDOLa1rV4iN.O", // "test"
+		AuthMethod:     config.AuthPassword,
+		RateLimitAuth:  10000,
+		RateLimitAdopt: 10000,
+		TrustProxy:     true,
 	}
 	return NewServer(cfg, mem), mem
 }
@@ -587,6 +590,7 @@ func TestAdopt(t *testing.T) {
 		"ado": {"1"},
 	})
 	soloLines := strings.Split(strings.TrimSpace(w.Body.String()), "\n")
+	soloSid := soloLines[1]
 	soloShareID := soloLines[3]
 
 	t.Run("missing fields", func(t *testing.T) {
@@ -622,13 +626,37 @@ func TestAdopt(t *testing.T) {
 
 	t.Run("successful adopt", func(t *testing.T) {
 		w := postForm(srv, "/api/adopt.php", url.Values{
-			"sid": {ownerSid},
+			"sid": {soloSid},
 			"nic": {"adopted-user"},
 			"aid": {soloShareID},
 			"pin": {groupPin},
 		})
 		if !strings.Contains(w.Body.String(), "OK") {
 			t.Errorf("expected OK, got: %s", w.Body.String())
+		}
+	})
+
+	t.Run("unauthorized adopt", func(t *testing.T) {
+		// create another adoptable share
+		w = postForm(srv, "/api/create.php", url.Values{
+			"dur": {"3600"},
+			"int": {"5"},
+			"pwd": {"test"},
+			"mod": {"0"},
+			"ado": {"1"},
+		})
+		lines := strings.Split(strings.TrimSpace(w.Body.String()), "\n")
+		anotherShareID := lines[3]
+
+		// try to adopt with wrong session
+		w = postForm(srv, "/api/adopt.php", url.Values{
+			"sid": {ownerSid},
+			"nic": {"attacker"},
+			"aid": {anotherShareID},
+			"pin": {groupPin},
+		})
+		if !strings.Contains(w.Body.String(), "Not authorized!") {
+			t.Errorf("expected not authorized, got: %s", w.Body.String())
 		}
 	})
 
@@ -642,10 +670,11 @@ func TestAdopt(t *testing.T) {
 			"ado": {"0"},
 		})
 		lines := strings.Split(strings.TrimSpace(w.Body.String()), "\n")
+		nonAdoptableSid := lines[1]
 		nonAdoptableID := lines[3]
 
 		w = postForm(srv, "/api/adopt.php", url.Values{
-			"sid": {ownerSid},
+			"sid": {nonAdoptableSid},
 			"nic": {"adopter"},
 			"aid": {nonAdoptableID},
 			"pin": {groupPin},

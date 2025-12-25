@@ -54,13 +54,14 @@ func (s *Server) handleAdopt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hostSession, err := model.LoadSession(ctx, s.store, share.Host(), s.cfg.MaxCachedPts)
-	if err != nil {
-		fmt.Fprintln(w, "Session expired!")
+	// verify caller owns the share being adopted
+	// after this check, session IS the host session
+	if sid != share.Host() {
+		fmt.Fprintln(w, "Not authorized!")
 		return
 	}
 
-	if hostSession.Encrypted() {
+	if session.Encrypted() {
 		fmt.Fprintln(w, "End-to-end encrypted shares cannot be adopted!")
 		return
 	}
@@ -78,13 +79,11 @@ func (s *Server) handleAdopt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hostSession.AddTarget(target.ID())
-	if err := hostSession.Save(ctx); err != nil {
+	session.AddTarget(target.ID())
+	if err := session.Save(ctx); err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
-
-	_ = session
 
 	fmt.Fprintln(w, "OK")
 }
