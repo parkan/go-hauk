@@ -24,14 +24,14 @@ docker network create hauk
 docker run -d --name redis --network hauk redis:alpine
 
 # generate password hash
-htpasswd -nbBC 10 "" 'your-password' | tr -d ':\n'
+export HAUK_PASSWORD_HASH=$(htpasswd -nbBC 10 "" 'your-password' | tr -d ':\n')
 
-# start hauk (replace hash with output from above)
+# start hauk
 docker run -d --name hauk \
   --network hauk \
   -p 8080:8080 \
   -e HAUK_AUTH_METHOD=password \
-  -e HAUK_PASSWORD_HASH='$2y$10$...' \
+  -e HAUK_PASSWORD_HASH \
   -e HAUK_REDIS_ADDR=redis:6379 \
   ghcr.io/parkan/go-hauk
 ```
