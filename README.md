@@ -17,9 +17,21 @@ The original PHP implementation works fine but has some overhead. This port prov
 ## usage
 
 ```
-docker run -p 8080:8080 \
+# create network
+docker network create hauk
+
+# start redis
+docker run -d --name redis --network hauk redis:alpine
+
+# generate password hash
+htpasswd -nbBC 10 "" 'your-password' | tr -d ':\n'
+
+# start hauk (replace hash with output from above)
+docker run -d --name hauk \
+  --network hauk \
+  -p 8080:8080 \
   -e HAUK_AUTH_METHOD=password \
-  -e HAUK_PASSWORD_HASH='$2a$10$...' \
+  -e HAUK_PASSWORD_HASH='$2y$10$...' \
   -e HAUK_REDIS_ADDR=redis:6379 \
   ghcr.io/parkan/go-hauk
 ```
