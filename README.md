@@ -1,5 +1,7 @@
 # go-hauk
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template/782cee73-eaa2-4d39-bb7c-3bbb67f1ef25)
+
 Go port of the [Hauk](https://github.com/bilde2910/Hauk) location sharing backend.
 
 ## why
