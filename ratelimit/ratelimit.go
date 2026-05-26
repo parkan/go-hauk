@@ -102,16 +102,16 @@ func (l *Limiter) WrapFunc(next http.HandlerFunc) http.HandlerFunc {
 
 func (l *Limiter) clientIP(r *http.Request) string {
 	if l.trustProxy {
-		// check X-Forwarded-For (railway, nginx, etc)
+		// rightmost hop is the one our proxy appended; leftmost is spoofable.
+		// assumes a single trusted proxy in front (railway, nginx)
 		if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
-			if idx := strings.Index(xff, ","); idx != -1 {
-				return strings.TrimSpace(xff[:idx])
+			if idx := strings.LastIndex(xff, ","); idx != -1 {
+				return strings.TrimSpace(xff[idx+1:])
 			}
 			return strings.TrimSpace(xff)
 		}
-		// check X-Real-IP
 		if xri := r.Header.Get("X-Real-IP"); xri != "" {
-			return xri
+			return strings.TrimSpace(xri)
 		}
 	}
 	// use remote addr directly
