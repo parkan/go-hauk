@@ -14,6 +14,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # stay on golang 1.25.x -- allow patch tags only, not 1.26+
+      - dependency-name: golang
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
 
   # the workflow actions themselves
   - package-ecosystem: github-actions
