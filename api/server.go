@@ -15,6 +15,8 @@ import (
 
 const backendVersion = "1.6.2-go"
 
+const maxBodyBytes = 1 << 20
+
 type Server struct {
 	mux         *http.ServeMux
 	cfg         *config.Config
@@ -63,5 +65,6 @@ func NewServer(cfg *config.Config, s store.Store) *Server {
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Hauk-Version", backendVersion)
+	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 	s.mux.ServeHTTP(w, r)
 }
