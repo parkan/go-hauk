@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # go modules -- one grouped PR for everything
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      go-deps:
+        patterns: ["*"]
+
+  # dockerfile base images (golang, alpine)
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+
+  # the workflow actions themselves
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
