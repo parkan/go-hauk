@@ -28,9 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
       - uses: golang/govulncheck-action@v1
         with:
           go-version-file: go.mod
+          # reuse the checkout above; the action's own bundled checkout
+          # conflicts with checkout v6 (duplicate Authorization header)
+          repo-checkout: false
