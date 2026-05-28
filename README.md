@@ -70,6 +70,9 @@ performed, and risks inherent in the upstream protocol (e.g. 6-digit group pins,
 view links readable by anyone with the url) are carried forward. use at your own
 discretion.
 
+some proposed hardening lives under https://github.com/parkan/go-hauk/pull/10/changes
+however validating this not breaking things without conformance tests is nontrivial
+
 ## compatibility
 
 drop-in replacement for the php backend. works with the existing android app and web frontend.
