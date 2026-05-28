@@ -58,6 +58,14 @@ see `config/config.go` for full list.
 - adopt authorization: only share owner can adopt into groups (fixes CVE-like auth bypass in upstream)
 - built-in rate limiting on auth and adopt endpoints (configurable, default 10 req/min/ip)
 
+## disclaimer
+
+this is a best-effort port of the upstream reference backend. the security
+surface has been mitigated where practical, but no third-party audit has been
+performed, and risks inherent in the upstream protocol (e.g. 6-digit group pins,
+view links readable by anyone with the url) are carried forward. use at your own
+discretion.
+
 ## compatibility
 
 drop-in replacement for the php backend. works with the existing android app and web frontend.
