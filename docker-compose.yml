@@ -1,0 +1,37 @@
+services:
+  hauk:
+    image: ghcr.io/parkan/go-hauk
+    ports:
+      - "8080:8080"
+    environment:
+      HAUK_REDIS_ADDR: redis:6379
+      HAUK_AUTH_METHOD: password
+      HAUK_PASSWORD_HASH: "${HAUK_PASSWORD_HASH:?set HAUK_PASSWORD_HASH, see README}"
+      HAUK_PUBLIC_URL: "${HAUK_PUBLIC_URL:-http://localhost:8080/}"
+      HAUK_MAX_DURATION: "${HAUK_MAX_DURATION:-86400}"
+      HAUK_TRUST_PROXY: "${HAUK_TRUST_PROXY:-false}"
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    # REDIS_PERSIST=off => in-memory only; default persists to the volume below
+    command:
+      - sh
+      - -c
+      - '[ "$$REDIS_PERSIST" = off ] && exec redis-server --save "" --appendonly no || exec redis-server --appendonly yes'
+    environment:
+      REDIS_PERSIST: "${REDIS_PERSIST:-on}"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  redis-data:
