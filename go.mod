@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.13
-	github.com/redis/go-redis/v9 v9.19.0
-	golang.org/x/crypto v0.52.0
+	github.com/redis/go-redis/v9 v9.20.0
+	golang.org/x/crypto v0.53.0
 )
 
 require (
