@@ -9,6 +9,7 @@
     "btn_dismiss": "Revocare",
     "dialog_connection_head": "Eroare de conexiune",
     "google_play_badge_url": "https://play.google.com/intl/ro_ro/badges/static/images/badges/ro_badge_web_generic.png",
+    "app_store_badge_url": "https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/ro-ro",
     "f_droid_badge_url": "https://fdroid.gitlab.io/artwork/badge/get-it-on-ro.png",
     "btn_decrypt": "Deblocare",
     "last_update_days": "Acum {{time}}z",

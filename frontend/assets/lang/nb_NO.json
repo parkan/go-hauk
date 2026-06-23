@@ -1,6 +1,7 @@
 {
     "f_droid_badge_url": "https://fdroid.gitlab.io/artwork/badge/get-it-on-no.png",
     "google_play_badge_url": "https://play.google.com/intl/en_us/badges/static/images/badges/no_badge_web_generic.png",
+    "app_store_badge_url": "https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/no-no",
     "btn_dismiss": "Lukk",
     "status_offline": "Frakoblet",
     "status_expired": "Utløpt",
