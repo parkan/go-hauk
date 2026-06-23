@@ -2,6 +2,7 @@
     "btn_dismiss": "닫기",
     "google_play_badge_text": "Google Play 에서 다운로드",
     "google_play_badge_url": "https://play.google.com/intl/en_us/badges/static/images/badges/ko_badge_web_generic.png",
+    "app_store_badge_url": "https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/ko-kr",
     "f_droid_badge_text": "F-Droid 에서 다운로드",
     "f_droid_badge_url": "https://fdroid.gitlab.io/artwork/badge/get-it-on-ko.png",
     "btn_show_all": "모두 보기",

@@ -1,6 +1,7 @@
 {
     "google_play_badge_text": "Pobierz z Google Play",
     "google_play_badge_url": "https://play.google.com/intl/en_us/badges/static/images/badges/pl_badge_web_generic.png",
+    "app_store_badge_url": "https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/pl-pl",
     "f_droid_badge_text": "Pobierz z F-Droid",
     "f_droid_badge_url": "https://fdroid.gitlab.io/artwork/badge/get-it-on-pl.png",
     "btn_show_all": "Pokaż wszystko",

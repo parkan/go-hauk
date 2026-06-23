@@ -122,15 +122,21 @@ body {
     font-family: monospace;
     font-size: 5vmin;
 }
-.store-icon {
-    margin-top: 1vmin;
-    width: 40vmin;
+.cover#index a {
+    text-decoration: none;
+}
+.store-icon:not(#store-icon-appstore) {
+    width: 29vmin;
+    margin-right: -2vmin;
+}
+.store-icon#store-icon-appstore {
+    width: 23vmin;
+    margin-bottom: 1.7vmin;
+    margin-left: 1.7vmin;
+    margin-top: 1.7vmin;
 }
 a:first-child > .store-icon {
-    margin-left: -5vmin;
-}
-a:last-child > .store-icon {
-    margin-right: -5vmin;
+    margin-left: -2vmin;
 }
 
 /* Display the Hauk logo in the bottom left corner of the map if the viewport is
